@@ -67,7 +67,8 @@ def Charging_Process(Profiles_user, User_list, country, year, dummy_days, inputf
     SOC_user = {}
     plug_in_user = {}
     num_us = 0
-    
+    dummy_minutes = 1440 * dummy_days
+
     # Creation of date array 
     start_day = dt.datetime(year, 1, 1) - dt.timedelta(days=dummy_days)
     n_periods = len(Profiles_user['Working - Large car'])
@@ -265,7 +266,8 @@ def Charging_Process(Profiles_user, User_list, country, year, dummy_days, inputf
             Charging_profile = Charging_profile + charging_power
             SOC_user[Us.user_name].append(SOC)
             Charging_profile_user[Us.user_name].append(charging_power)
-            plug_in_user[Us.user_name].append(plug_in)
+            plug_in_f = plug_in[dummy_minutes:-dummy_minutes]
+            plug_in_user[Us.user_name].append(plug_in_f)
 
             if charging_mode == 'Perfect Foresight':
                 en_system = (Battery_cap_Us_min - charging_power) * plug_in
@@ -276,7 +278,7 @@ def Charging_Process(Profiles_user, User_list, country, year, dummy_days, inputf
             else: 
                 SOC_user[Us.user_name].append(SOC)
                 Charging_profile_user[Us.user_name].append(charging_power)
-                plug_in_user[Us.user_name].append(plug_in)
+                plug_in_user[Us.user_name].append(plug_in_f)
 
                 neg_soc_ind = np.where(SOC < 0)[0]
                 neg_soc_ind = np.split(neg_soc_ind, np.where(np.diff(neg_soc_ind) != 1)[0]+1)
@@ -289,7 +291,6 @@ def Charging_Process(Profiles_user, User_list, country, year, dummy_days, inputf
         num_us = num_us + Us.num_users
         print(f'Charging Profile of "{Us.user_name}" user completed ({num_us}/{tot_users})') #screen update about progress of computation
     
-    dummy_minutes = 1440 * dummy_days
     Charging_profile = Charging_profile[dummy_minutes:-dummy_minutes]
     en_sys_tot = en_sys_tot[dummy_minutes:-dummy_minutes]
 

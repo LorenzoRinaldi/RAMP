@@ -14,7 +14,7 @@ User_list = []
 country = 'DE'
 
 #Total number of users to be simulated
-tot_users = 10
+tot_users = 100
 
 #Variabilities 
 r_w = {}
