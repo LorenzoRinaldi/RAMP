@@ -159,7 +159,7 @@ def Usage_df_plot(Usage_df, year, country, User_list, start = '01-01 00:00:00', 
     end_plot = str(year) + ' ' + end
 
     # Plot of the Usage in percentage of the total population
-    Usage_df_plot = Usage_df[start_plot : end_plot]/10  #Divide by 10 because a value of 10 is assigned for each user to avoid the filter 
+    Usage_df_plot = Usage_df[start_plot : end_plot]  #Divide by 10 because a value of 10 is assigned for each user to avoid the filter 
 
     figsize = (10,5)
     ax = ((Usage_df_plot/tot_users)*100).plot(kind='line', color= 'orange', rot=0, fontsize=15, legend=False, figsize = figsize)
@@ -290,10 +290,6 @@ def Time_correction(df, country, year):
     df_c = copy.deepcopy(df)   
     
     ind = df_c.index.tz_localize(pytz.country_timezones[country][0], nonexistent = 'NaT', ambiguous='NaT')
-    ind_filter = ind[~ ind.isnull()]
-        
-    idx = pd.date_range(start=min(ind_filter), end=max(ind_filter), freq = ind.to_series().diff().min())
-    df_c = df_c.set_index(idx)
     
     ind_utc = ind.tz_convert('utc')
     temp_utc = df_c.set_index(ind_utc)

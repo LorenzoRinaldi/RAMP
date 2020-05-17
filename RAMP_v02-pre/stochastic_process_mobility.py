@@ -14,7 +14,7 @@ from initialise import Initialise_model, Initialise_inputs
 def Stochastic_Process_Mobility(inputfile, country, year):
     
     (peak_enlarg, mu_peak, s_peak, Year_behaviour, User_list, 
-     Profile, Usage, Profile_user, num_profiles_user, 
+     Profile, Usage, Profile_user, Usage_user, num_profiles_user, 
      num_profiles_sim, dummy_days) = Initialise_inputs(inputfile, country, year)
     
     '''
@@ -48,6 +48,7 @@ def Stochastic_Process_Mobility(inputfile, country, year):
         Tot_Classes = np.zeros(1440) #initialise an empty daily profile that will be filled with the sum of the hourly profiles of each User instance
         Tot_Usage = np.zeros(1440) #initialise an empty daily usage profile that will be filled with the sum of the hourly usage of each User instance
         Profile_dict = {}
+        Usage_dict = {}
         for Us in User_list: #iterates for each User instance (i.e. for each user class)
             Us.load = np.zeros(1440) #initialise empty load for User instance
             Us.usage = np.zeros(1440) #initialise empty usage profile for User instance
@@ -55,8 +56,10 @@ def Stochastic_Process_Mobility(inputfile, country, year):
             # Profile_dict[Us.user_name] = np.zeros((1440,Us.num_users)) #initialise empty user-detailed usage profile for User instance
             # daily_use_tot = np.zeros((1440,Us.num_users))
             Profile_dict[Us.user_name] = []
+            Usage_dict[Us.user_name] = []
             for i in range(Us.num_users): #iterates for every single user within a User class. Each single user has its own separate randomisation
-                daily_use_tot = np.zeros(1440)
+                daily_profile_tot = np.zeros(1440)
+                daily_usage_tot = np.zeros(1440)
                 if Us.user_preference == 0:
                     rand_daily_pref = 0
                     pass
@@ -308,18 +311,22 @@ def Stochastic_Process_Mobility(inputfile, country, year):
                             else:
                                 continue #if the random switch_on falls somewhere where the App has been already turned on, tries again from beginning of the while cycle
                     App.usage = App.daily_use   #Save the daily use to calculate the usage profile, i.e. without considering the power of the appliance. 
-                    App.usage = np.where(App.usage > 1, 10, App.usage)
+                    App.usage = np.where(App.usage > 0.1, 1, 0)
                     Us.load = Us.load + App.daily_use #adds the App profile to the User load
                     Us.usage = Us.usage + App.usage #adds the App usage to the User usage profile
-                    daily_use_tot = daily_use_tot + App.daily_use
-                Profile_dict[Us.user_name].append(daily_use_tot)
+                    daily_profile_tot = daily_profile_tot + App.daily_use
+                    daily_usage_tot = daily_usage_tot + App.usage
+                Profile_dict[Us.user_name].append(daily_profile_tot)
+                Usage_dict[Us.user_name].append(daily_usage_tot)
             Tot_Classes = Tot_Classes + Us.load #adds the User load to the total load of all User classes
             Tot_Usage = Tot_Usage + Us.usage
         Profile_user.append(Profile_dict)
+        Usage_user.append(Usage_dict)
         if (dummy_days - 1) < prof_i < (num_profiles_sim - dummy_days): # Do not append dummy days
             Profile.append(Tot_Classes) #appends the total load to the list that will contain all the generated profiles
             Usage.append(Tot_Usage)#appends the total usage to the list that will contain all the generated profiles
-        
+            Usage_user.append(Usage_dict)
+
             print(f'Profile {prof_i - dummy_days +1}/{num_profiles_user} completed') #screen update about progress of computation
     
-    return(Profile, Usage, User_list, Profile_user, dummy_days)
+    return(Profile, Usage, User_list, Profile_user, Usage_user, dummy_days)

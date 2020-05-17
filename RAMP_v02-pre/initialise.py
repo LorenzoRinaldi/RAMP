@@ -85,14 +85,15 @@ def Initialise_model(dummy_days):
     Profile = [] #creates empty lists to store the results of each code run, i.e. each stochastically generated profile
     Usage = []
     Profile_user = []
+    Usage_user = []
 
-    return (Profile, Usage, Profile_user, num_profiles_user, num_profiles_sim)
+    return (Profile, Usage, Profile_user, Usage_user, num_profiles_user, num_profiles_sim)
     
 def Initialise_inputs(inputfile, country, year):
     
     Year_behaviour, dummy_days = yearly_pattern(country, year)
     User_list = user_defined_inputs(inputfile)
-    (Profile, Usage, Profile_user, num_profiles_user,num_profiles_sim
+    (Profile, Usage, Profile_user, Usage_user, num_profiles_user,num_profiles_sim
      ) = Initialise_model(dummy_days)
     
     if calendar.isleap(year) and num_profiles_user == 365:
@@ -108,7 +109,7 @@ def Initialise_inputs(inputfile, country, year):
     s_peak = 1 #standard deviation (as percentage of the median value) of the gaussian distribution [0,1] above mentioned
     
     return (peak_enlarg, mu_peak, s_peak, Year_behaviour, User_list, Profile, 
-            Usage, Profile_user, num_profiles_user, num_profiles_sim, dummy_days)
+            Usage, Profile_user, Usage_user, num_profiles_user, num_profiles_sim, dummy_days)
 
 #%% Support functions for the charging process 
     
