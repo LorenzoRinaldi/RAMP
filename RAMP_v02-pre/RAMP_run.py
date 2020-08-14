@@ -26,12 +26,21 @@ under the License.
 from stochastic_process import Stochastic_Process
 from post_process import*
 
+
+# Define country and year to be considered when generating profiles
+country = 'IT'
+year = 2016
+
+# Choose if simulating the whole year (True) or not (False)
+# if False, the console will ask how many days should be simulated. 
+full_year = False
+
 # Calls the stochastic process and saves the result in a list of stochastic profiles
 # In this default example, the model runs for 2 input files ("input_file_1", "input_file_2"),
 # but single or multiple files can be run restricting or enlarging the iteration range 
 # and naming further input files with progressive numbering
-for j in range(1,3):
-    Profiles_list = Stochastic_Process(j)
+for j in range(3,4):
+    Profiles_list = Stochastic_Process(j, country, year, full_year)
     
 # Post-processes the results and generates plots
     Profiles_avg, Profiles_list_kW, Profiles_series = Profile_formatting(Profiles_list)

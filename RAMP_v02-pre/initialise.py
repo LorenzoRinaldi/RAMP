@@ -2,21 +2,65 @@
 
 #%% Initialisation of a model instance
 
-from core import np
+from core import np, pd
 import importlib
+import datetime
+import calendar
+import pytz
+
+# Import holidays package 
+import holidays 
 
 
-def yearly_pattern():
+def yearly_pattern(country, year):
     '''
     Definition of a yearly pattern of weekends and weekdays, in case some appliances have specific wd/we behaviour
-    '''
+    ''' 
+    # Number of days to add at the beginning and the end of the simulation to avoid special cases at the beginning and at the end
+
     #Yearly behaviour pattern
-    Year_behaviour = np.zeros(365)
-    Year_behaviour[5:365:7] = 1
-    Year_behaviour[6:365:7] = 1
+    first_day = datetime.date(year, 1, 1).strftime("%A")
+    
+    if calendar.isleap(year):
+        year_len = 366
+    else: 
+        year_len = 365
+        
+    Year_behaviour = np.zeros(year_len)
+    
+    dict_year = {'Monday'   : [5, 6], 
+                 'Tuesday'  : [4, 5], 
+                 'Wednesday': [3, 4],
+                 'Thursday' : [2, 3], 
+                 'Friday'   : [1, 2], 
+                 'Saturday' : [0, 1], 
+                 'Sunday'   : [0, 6]}
+      
+    for d in dict_year.keys():
+        if first_day == d:
+            Year_behaviour[dict_year[d][0]:year_len:7] = 1
+            Year_behaviour[dict_year[d][1]:year_len:7] = 2
+    
+    # Adding Vacation days to the Yearly pattern
+
+    if country == 'EL': 
+        country = 'GR'
+    elif country == 'FR':
+        country = 'FRA'
+        
+    try:
+        holidays_country = list(holidays.CountryHoliday(country, years = year).keys())
+    except KeyError: 
+        c_error = {'LV':'LT', 'RO':'BG'}
+        print(f"[WARNING] Due to a known issue, the version of the holidays package you automatically installed is the 0.10.2, not containing {country}. Please refer to 'https://github.com/dr-prodigy/python-holidays/issues/338' for an explanation on how to install holidays 0.10.3. Otherwise, holidays from {c_error[country]} will be used.")
+        country = c_error[country]
+        holidays_country = list(holidays.CountryHoliday(country, years = year).keys())
+
+    for i in range(len(holidays_country)):
+        day_of_year = holidays_country[i].timetuple().tm_yday
+        Year_behaviour[day_of_year-1] = 2
     
     return(Year_behaviour)
-
 
 def user_defined_inputs(j):
     '''
@@ -26,18 +70,32 @@ def user_defined_inputs(j):
     return(User_list)
 
 
-def Initialise_model():
+def Initialise_model(full_year, year):
     '''
     The model is ready to be initialised
     '''
-    num_profiles = int(input("please indicate the number of profiles to be generated: ")) #asks the user how many profiles (i.e. code runs) he wants
-    print('Please wait...') 
+    
     Profile = [] #creates an empty list to store the results of each code run, i.e. each stochastically generated profile
+    
+    # Simulating n days before and after the wished number of profiles
+    if full_year: 
+        if calendar.isleap(year): # In case several countries shall be simulated in a loop, use fixed number of days 
+            num_profiles_user = 366 # leap full year
+        else:
+            num_profiles_user = 365  # normal full year
+    else:
+        num_profiles_user = int(input("Please indicate the number of profiles (days) to be generated: ")) #asks the user how many profiles (i.e. code runs) they want
+
+    num_profiles = num_profiles_user
+    
+    
+    assert 1 <= num_profiles_user <= 366, '[CRITICAL] Incorrect number of profiles, please provide a number higher than 0, up to 366'
+    print('Please wait...') 
     
     return (Profile, num_profiles)
     
-def Initialise_inputs(j):
-    Year_behaviour = yearly_pattern()
+def Initialise_inputs(j, country, year):
+    Year_behaviour = yearly_pattern(country,year)
     user_defined_inputs(j)
     user_list = user_defined_inputs(j)
     
