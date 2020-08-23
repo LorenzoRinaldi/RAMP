@@ -28,25 +28,28 @@ from post_process import*
 
 
 # Define country and year to be considered when generating profiles
-country = 'IT'
+country_list = ['AL', 'AT', 'BA', 'BE', 'BG', 'CH', 'CZ', 'DE', 'DK']
 year = 2016
 
 # Choose if simulating the whole year (True) or not (False)
 # if False, the console will ask how many days should be simulated. 
-full_year = False
+full_year = True
 
 # Calls the stochastic process and saves the result in a list of stochastic profiles
 # In this default example, the model runs for 2 input files ("input_file_1", "input_file_2"),
 # but single or multiple files can be run restricting or enlarging the iteration range 
 # and naming further input files with progressive numbering
-for j in range(3,4):
-    Profiles_list = Stochastic_Process(j, country, year, full_year)
+for country in country_list:
+    Profiles_list = Stochastic_Process(country, year, full_year)
     
 # Post-processes the results and generates plots
     Profiles_avg, Profiles_list_kW, Profiles_series = Profile_formatting(Profiles_list)
     Profile_series_plot(Profiles_series) #by default, profiles are plotted as a series
     
-    export_series(Profiles_series,j)
+    Time_adj_profiles = Time_correction(Profile_dataframe(Profiles_series, year), country, year)
+    
+    Time_adj_profiles.resample('H').mean().to_csv('results/%s.csv' %country)
+    # export_series(Profiles_series,country)
 
     if len(Profiles_list) > 1: #if more than one daily profile is generated, also cloud plots are shown
         Profile_cloud_plot(Profiles_list, Profiles_avg)

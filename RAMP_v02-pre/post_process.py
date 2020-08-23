@@ -4,6 +4,9 @@
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+import copy
+import pytz
+import datetime as dt
 
 #%% Post-processing
 '''
@@ -56,6 +59,46 @@ def Profile_series_plot(stoch_profiles_series):
     #plt.savefig('profiles.eps', format='eps', dpi=1000)
     plt.show()
 
+def Profile_dataframe(Profiles_series, year):
+    
+    minutes = pd.date_range(start=str(year) + '-01-01', periods = len(Profiles_series), freq='T')
+    
+    if Profiles_series.ndim == 1:
+        Profiles_df = pd.DataFrame(Profiles_series, columns = ['Cooking Profile'])
+    else: 
+        Profiles_df = pd.DataFrame(Profiles_series)   
+    
+    Profiles_df.set_index(minutes, inplace = True)
+   
+    return Profiles_df
+
+def Time_correction(df, country, year):
+    
+    df_c = copy.deepcopy(df)   
+    
+    if country == 'EL':
+        country = 'GR'
+    if country == 'UK':
+        country = 'GB'
+        
+    ind = df_c.index.tz_localize(pytz.country_timezones[country][0], nonexistent = 'NaT', ambiguous='NaT')
+    
+    ind_utc = ind.tz_convert('utc')
+    temp_utc = df_c.set_index(ind_utc)
+    
+    ind_year = pd.date_range(start=str(year) + '-01-01', end=str(max(temp_utc.index).date()) + ' 23:59:00', freq = ind.to_series().diff().min(), tz = 'utc')
+    temp_year = pd.DataFrame([np.nan] * len(ind_year), index = ind_year)
+    
+    df_utc_final = temp_utc.join(temp_year, how='outer')
+    df_utc_final = df_utc_final.dropna(axis=1, how='all')
+    df_utc_final = df_utc_final.loc[df_utc_final.index.notnull()]
+    df_utc_final = df_utc_final.ffill()
+    df_utc_final = df_utc_final[df_utc_final.index >= str(year) + '-01-01']
+    
+    df_utc_final = pd.DataFrame(df_utc_final)
+    
+    return df_utc_final
+
 #%% Export individual profiles
 '''
 for i in range (len(Profile)):
@@ -64,6 +107,6 @@ for i in range (len(Profile)):
 
 # Export Profiles
 
-def export_series(stoch_profiles_series, j):
+def export_series(stoch_profiles_series, country):
     series_frame = pd.DataFrame(stoch_profiles_series)
-    series_frame.to_csv('results/output_file_%d.csv' % (j))
+    series_frame.to_csv('results/output_file_%s.csv' % (country))

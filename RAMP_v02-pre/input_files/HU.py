@@ -53,100 +53,106 @@ User_list.append(Family_type2b_di)
 
 #Create new appliances
 
+breakfast_w1 = [360,570]
+breakfast_w2 = [14*60,17*60]
+breakfast_w3 = [20*60,1440]
+lunch = [690,14*60]
+dinner = [1050,20*60]
+
 #Familiy type 1a
 breakfast_1 = Family_type1a_br.Appliance(Family_type1a_br,1,850,3,15,0.1,3, fixed_cycle=0, thermal_P_var = 0.2)
-breakfast_1.windows([5*60,9*60],[13*60,18*60],0.2,[20*60,23*60])
+breakfast_1.windows(breakfast_w1,breakfast_w2,0.2,breakfast_w3)
 
 lunch_1 = Family_type1a_lu.Appliance(Family_type1a_lu,1,1500,1,20,0.2,5, fixed_cycle = 1, thermal_P_var = 0.2)
-lunch_1.windows([11*60,13*60],[0,0],0.3)
+lunch_1.windows(lunch,[0,0],0.3)
 lunch_1.specific_cycle_1(850,20,0,0,0.1) 
 lunch_1.cycle_behaviour([11*60,13*60],[0,0])
 
 lunch2_1 = Family_type1a_lu.Appliance(Family_type1a_lu,1,1500,1,15,0.2,5, fixed_cycle = 1, thermal_P_var = 0.2)
-lunch2_1.windows([11*60,13*60],[0,0],0.3)
+lunch2_1.windows(lunch,[0,0],0.3)
 lunch2_1.specific_cycle_1(1050,15,0,0,0.1)
 lunch2_1.cycle_behaviour([11*60,13*60],[0,0])
 
 dinner_1 = Family_type1a_di.Appliance(Family_type1a_di,1,1500,1,18,0.2,5, fixed_cycle = 1, thermal_P_var = 0.2)
-dinner_1.windows([18*60,20*60],[0,0],0.3)
+dinner_1.windows(dinner,[0,0],0.3)
 dinner_1.specific_cycle_1(2100,8,850,10,0.1)
 dinner_1.cycle_behaviour([18*60,20*60],[0,0])
 
 dinner2_1 = Family_type1a_di.Appliance(Family_type1a_di,1,1500,1,15,0.2,5, fixed_cycle = 1, thermal_P_var = 0.2)
-dinner2_1.windows([18*60,20*60],[0,0],0.3)
+dinner2_1.windows(dinner,[0,0],0.3)
 dinner2_1.specific_cycle_1(1250,10,0,0,0.1)
 dinner2_1.cycle_behaviour([18*60,20*60],[0,0])
 
 #Family type 1b
 breakfast_1 = Family_type1b_br.Appliance(Family_type1b_br,1,850,3,15,0.1,3, fixed_cycle=0, thermal_P_var = 0.2)
-breakfast_1.windows([5*60,9*60],[13*60,18*60],0.2,[20*60,23*60])
+breakfast_1.windows(breakfast_w1,breakfast_w2,0.2,breakfast_w3)
 
 dinner_1 = Family_type1b_di.Appliance(Family_type1b_di,1,1500,1,20,0.2,5, fixed_cycle = 1, thermal_P_var = 0.2)
-dinner_1.windows([18*60,20*60],[0,0],0.3)
+dinner_1.windows(dinner,[0,0],0.3)
 dinner_1.specific_cycle_1(850,20,0,0,0.1) 
 dinner_1.cycle_behaviour([18*60,20*60],[0,0])
 
 dinner2_1 = Family_type1b_di.Appliance(Family_type1b_di,1,1500,1,15,0.2,5, fixed_cycle = 1, thermal_P_var = 0.2)
-dinner2_1.windows([18*60,20*60],[0,0],0.3)
+dinner2_1.windows(dinner,[0,0],0.3)
 dinner2_1.specific_cycle_1(1050,15,0,0,0.1)
 dinner2_1.cycle_behaviour([18*60,20*60],[0,0])
 
 lunch_1 = Family_type1b_lu.Appliance(Family_type1b_lu,1,1500,1,18,0.2,5, fixed_cycle = 1, thermal_P_var = 0.2)
-lunch_1.windows([11*60,13*60],[0,0],0.3)
+lunch_1.windows(lunch,[0,0],0.3)
 lunch_1.specific_cycle_1(2100,8,850,10,0.1)
 lunch_1.cycle_behaviour([11*60,13*60],[0,0])
 
 lunch2_1 = Family_type1b_lu.Appliance(Family_type1b_lu,1,1500,1,15,0.2,5, fixed_cycle = 1, thermal_P_var = 0.2)
-lunch2_1.windows([11*60,13*60],[0,0],0.3)
+lunch2_1.windows(lunch,[0,0],0.3)
 lunch2_1.specific_cycle_1(1250,10,0,0,0.1)
 lunch2_1.cycle_behaviour([11*60,13*60],[0,0])
 
 
 #Family type 2a
 breakfast_1 = Family_type2a_br.Appliance(Family_type2a_br,1,900,3,24,0.1,3, fixed_cycle=0, thermal_P_var = 0.2)
-breakfast_1.windows([5*60,9*60],[13*60,18*60],0.2,[20*60,23*60])
+breakfast_1.windows(breakfast_w1,breakfast_w2,0.2,breakfast_w3)
 
 lunch_1 = Family_type2a_lu.Appliance(Family_type2a_lu,1,1500,1,20,0.2,5, fixed_cycle = 1, thermal_P_var = 0.2)
-lunch_1.windows([11*60,13*60],[0,0],0.3)
+lunch_1.windows(lunch,[0,0],0.3)
 lunch_1.specific_cycle_1(1100,20,0,0,0.1) 
 lunch_1.cycle_behaviour([11*60,13*60],[0,0])
 
 lunch2_1 = Family_type2a_lu.Appliance(Family_type2a_lu,1,1500,1,15,0.2,5, fixed_cycle = 1, thermal_P_var = 0.2)
-lunch2_1.windows([11*60,13*60],[0,0],0.3)
+lunch2_1.windows(lunch,[0,0],0.3)
 lunch2_1.specific_cycle_1(1500,15,0,0,0.1)
 lunch2_1.cycle_behaviour([11*60,13*60],[0,0])
 
 dinner_1 = Family_type2a_di.Appliance(Family_type2a_di,1,1500,1,18,0.2,5, fixed_cycle = 1, thermal_P_var = 0.2)
-dinner_1.windows([18*60,20*60],[0,0],0.3)
+dinner_1.windows(dinner,[0,0],0.3)
 dinner_1.specific_cycle_1(3600,8,1100,10,0.1)
 dinner_1.cycle_behaviour([18*60,20*60],[0,0])
 
 dinner2_1 = Family_type2a_di.Appliance(Family_type2a_di,1,1500,1,10,0.2,5, fixed_cycle = 1, thermal_P_var = 0.2)
-dinner2_1.windows([18*60,20*60],[0,0],0.3)
+dinner2_1.windows(dinner,[0,0],0.3)
 dinner2_1.specific_cycle_1(1900,10,0,0,0.1)
 dinner2_1.cycle_behaviour([18*60,20*60],[0,0])
 
 #Family type 2b
 breakfast_1 = Family_type2b_br.Appliance(Family_type2b_br,1,900,3,24,0.1,3, fixed_cycle=0, thermal_P_var = 0.2)
-breakfast_1.windows([5*60,9*60],[13*60,18*60],0.2,[20*60,23*60])
+breakfast_1.windows(breakfast_w1,breakfast_w2,0.2,breakfast_w3)
 
 dinner_1 = Family_type2b_di.Appliance(Family_type2b_di,1,1500,1,20,0.2,5, fixed_cycle = 1, thermal_P_var = 0.2)
-dinner_1.windows([18*60,20*60],[0,0],0.3)
+dinner_1.windows(dinner,[0,0],0.3)
 dinner_1.specific_cycle_1(1100,20,0,0,0.1) 
 dinner_1.cycle_behaviour([18*60,20*60],[0,0])
 
 dinner2_1 = Family_type2b_di.Appliance(Family_type2b_di,1,1500,1,15,0.2,5, fixed_cycle = 1, thermal_P_var = 0.2)
-dinner2_1.windows([18*60,20*60],[0,0],0.3)
+dinner2_1.windows(dinner,[0,0],0.3)
 dinner2_1.specific_cycle_1(1500,15,0,0,0.1)
 dinner2_1.cycle_behaviour([18*60,20*60],[0,0])
 
 lunch_1 = Family_type2b_lu.Appliance(Family_type2b_lu,1,1500,1,18,0.2,5, fixed_cycle = 1, thermal_P_var = 0.2)
-lunch_1.windows([11*60,13*60],[0,0],0.3)
+lunch_1.windows(lunch,[0,0],0.3)
 lunch_1.specific_cycle_1(3600,8,1100,10,0.1)
 lunch_1.cycle_behaviour([11*60,13*60],[0,0])
 
 lunch2_1 = Family_type2b_lu.Appliance(Family_type2b_lu,1,1500,1,10,0.2,5, fixed_cycle = 1, thermal_P_var = 0.2)
-lunch2_1.windows([11*60,13*60],[0,0],0.3)
+lunch2_1.windows(lunch,[0,0],0.3)
 lunch2_1.specific_cycle_1(1900,10,0,0,0.1)
 lunch2_1.cycle_behaviour([11*60,13*60],[0,0])
 

@@ -9,9 +9,9 @@ from initialise import Initialise_model, Initialise_inputs
 
 #%% Core model stochastic script
 
-def Stochastic_Process(j, country, year, full_year):
+def Stochastic_Process(country, year, full_year):
     Profile, num_profiles = Initialise_model(full_year, year)
-    peak_enlarg, mu_peak, s_peak, Year_behaviour, User_list = Initialise_inputs(j, country, year)
+    peak_enlarg, mu_peak, s_peak, Year_behaviour, User_list = Initialise_inputs(country, year)
     '''
     Calculation of the peak time range, which is used to discriminate between off-peak and on-peak coincident switch-on probability
     Calculates first the overall Peak Window (taking into account all User classes). 
@@ -69,10 +69,10 @@ def Stochastic_Process(j, country, year, full_year):
                                 pass
                             else:
                                 continue
-                        if App.wd_we == Year_behaviour[prof_i] or App.wd_we == 3 : #checks if the app is allowed in the given yearly behaviour pattern
+                        if App.wd_we == Year_behaviour[prof_i] or App.wd_we == 2 : #checks if the app is allowed in the given yearly behaviour pattern
                             pass
                         else:
-                            continue
+                            pass #continue
     
                         #recalculate windows start and ending times randomly, based on the inputs
                         rand_window_1 = np.array([int(random.uniform((App.window_1[0]-App.random_var_1),(App.window_1[0]+App.random_var_1))),int(random.uniform((App.window_1[1]-App.random_var_1),(App.window_1[1]+App.random_var_1)))])

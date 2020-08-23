@@ -26,7 +26,7 @@ def yearly_pattern(country, year):
     else: 
         year_len = 365
         
-    Year_behaviour = np.zeros(year_len)
+    Year_behaviour = np.ones(year_len)
     
     dict_year = {'Monday'   : [5, 6], 
                  'Tuesday'  : [4, 5], 
@@ -38,7 +38,7 @@ def yearly_pattern(country, year):
       
     for d in dict_year.keys():
         if first_day == d:
-            Year_behaviour[dict_year[d][0]:year_len:7] = 1
+            Year_behaviour[dict_year[d][0]:year_len:7] = 2
             Year_behaviour[dict_year[d][1]:year_len:7] = 2
     
     # Adding Vacation days to the Yearly pattern
@@ -62,13 +62,20 @@ def yearly_pattern(country, year):
     
     return(Year_behaviour)
 
-def user_defined_inputs(j):
+# def user_defined_inputs(country):
+#     '''
+#     Imports an input file and returns a processed User_list
+#     '''
+#     User_list = getattr((importlib.import_module('%s' %country)), 'User_list')
+#     return(User_list)
+
+def user_defined_inputs(inputfile):
     '''
     Imports an input file and returns a processed User_list
     '''
-    User_list = getattr((importlib.import_module('input_file_%d' %j)), 'User_list')
+    inputfile_module = inputfile.replace('/', '.')
+    User_list = getattr((importlib.import_module(f'input_files.{inputfile_module}')), 'User_list')
     return(User_list)
-
 
 def Initialise_model(full_year, year):
     '''
@@ -94,10 +101,9 @@ def Initialise_model(full_year, year):
     
     return (Profile, num_profiles)
     
-def Initialise_inputs(j, country, year):
+def Initialise_inputs(country, year):
     Year_behaviour = yearly_pattern(country,year)
-    user_defined_inputs(j)
-    user_list = user_defined_inputs(j)
+    user_list = user_defined_inputs(country)
     
     # Calibration parameters
     '''
