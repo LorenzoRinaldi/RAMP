@@ -18,21 +18,21 @@ For examples related to "thermal loads", see the "input_file_2".
 '''
 
 #Create new user classes
-Casa_Golinucci = User("Casa_Golinucci",1)
-User_list.append(Casa_Golinucci)
+House = User("House",1)
+User_list.append(House)
 
 #Create new appliances
 
 #Church
-Lampadine_a_LED = Casa_Golinucci.Appliance(user = Casa_Golinucci,
-                                           n = 20,
-                                           P = 10,
-                                           w = 2,
-                                           t = 100,
-                                           r_t = 0.2,
-                                           c = 60,
-                                           fixed = 'no',
-                                           flat = 'yes')
-Lampadine_a_LED.windows(w1 = [360,480],
-                        w2 = [1000,1300],
-                        r_w = 0.2)
+light_bulbs = House.Appliance(user = House,
+                              n = 20,
+                              P = 10,
+                              w = 2,
+                              t = 100,
+                              r_t = 0.2,
+                              c = 60,
+                              fixed = 'no',
+                              flat = 'yes')
+light_bulbs.windows(w1 = [360,480],
+                    w2 = [1000,1300],
+                    r_w = 0.2)
