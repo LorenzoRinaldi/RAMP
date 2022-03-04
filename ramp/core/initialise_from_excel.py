@@ -5,55 +5,16 @@
 import numpy as np 
 import importlib
 import pandas as pd
-import math
-from ramp.core.constants import inputs_params
 from ramp.core.core import User
-import importlib
-import copy
+from ramp.core.constants import inputs_params
+import math
 
 
-def yearly_pattern():
-    '''
-    Definition of a yearly pattern of weekends and weekdays, in case some appliances have specific wd/we behaviour
-    '''
-    #Yearly behaviour pattern
-    Year_behaviour = np.zeros(365)
-    Year_behaviour[5:365:7] = 1
-    Year_behaviour[6:365:7] = 1
+
+def initialise_inputs(file):
     
-    return(Year_behaviour)
-
-
-def user_defined_inputs(j):
-    '''
-    Imports an input file and returns a processed User_list
-    '''
-
-    file = copy.deepcopy(j)
-    file = file[:-3]
-    file = file.replace("\\",".")
-    file_module = importlib.import_module(f"{file}")
-    
-    User_list = file_module.User_list
-
-    return(User_list)
-
-
-def Initialise_model():
-    '''
-    The model is ready to be initialised
-    '''
-    num_profiles = int(input("please indicate the number of profiles to be generated: ")) #asks the user how many profiles (i.e. code runs) he wants
-    print('Please wait...') 
-    Profile = [] #creates an empty list to store the results of each code run, i.e. each stochastically generated profile
-    
-    return (Profile, num_profiles)
-    
-
-def Initialise_from_excel(file):
-    
-    users = pd.read_excel(file, sheet_name="Users", index_col=[0], header=[0])    
-    appliances = pd.read_excel(file, sheet_name="Appliances", index_col=[0,1], header=[0,1]).iloc[2:,:]
+    users = pd.read_excel(f"ramp/input_files/{file}.xlsx", sheet_name="Users", index_col=[0], header=[0])    
+    appliances = pd.read_excel(f"ramp/input_files/{file}.xlsx", sheet_name="Appliances", index_col=[0,1], header=[0,1]).iloc[2:,:]
 
     User_list = []
     
@@ -66,7 +27,7 @@ def Initialise_from_excel(file):
         for p in list(users.columns):
             instruction += ", "+ inputs_params['Users'][p] + "=" + str(users.loc[u,p])
         instruction += ")"
-                
+        
         exec(u + " = " + instruction)
         
         
@@ -114,17 +75,50 @@ def Initialise_from_excel(file):
     for u in list(users.index):
         User_list += [eval(u)] 
 
-    return User_list
-
-
-def Initialise_inputs(j, input_format):
     
-    Year_behaviour = yearly_pattern()
-    if input_format == "py":
-        user_list = user_defined_inputs(j)
-    elif input_format == "xlsx":
-        user_list = Initialise_from_excel(j)
+    return User_list
         
+
+
+def yearly_pattern():
+    '''
+    Definition of a yearly pattern of weekends and weekdays, in case some appliances have specific wd/we behaviour
+    '''
+    #Yearly behaviour pattern
+    Year_behaviour = np.zeros(365)
+    Year_behaviour[5:365:7] = 1
+    Year_behaviour[6:365:7] = 1
+    
+    return(Year_behaviour)
+
+
+def user_defined_inputs(j):
+    '''
+    Imports an input file and returns a processed User_list
+    '''
+
+    file_module = importlib.import_module(f'input_files.input_file_{j}')
+    
+    User_list = file_module.User_list
+
+    return(User_list)
+
+
+def Initialise_model():
+    '''
+    The model is ready to be initialised
+    '''
+    num_profiles = int(input("please indicate the number of profiles to be generated: ")) #asks the user how many profiles (i.e. code runs) he wants
+    print('Please wait...') 
+    Profile = [] #creates an empty list to store the results of each code run, i.e. each stochastically generated profile
+    
+    return (Profile, num_profiles)
+    
+
+def Initialise_inputs(j):
+    Year_behaviour = yearly_pattern()
+    user_defined_inputs(j)
+    user_list = user_defined_inputs(j)
     
     # Calibration parameters
     '''

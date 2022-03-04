@@ -11,7 +11,9 @@ from ramp.core.initialise import Initialise_model, Initialise_inputs
 
 def Stochastic_Process(j):
     Profile, num_profiles = Initialise_model()
-    peak_enlarg, mu_peak, s_peak, op_factor, Year_behaviour, User_list = Initialise_inputs(j)
+    
+    input_format = j.split(".")[-1]
+    peak_enlarg, mu_peak, s_peak, op_factor, Year_behaviour, User_list = Initialise_inputs(j, input_format)
     '''
     Calculation of the peak time range, which is used to discriminate between off-peak and on-peak coincident switch-on probability
     Calculates first the overall Peak Window (taking into account all User classes). 
@@ -33,6 +35,7 @@ def Stochastic_Process(j):
     peak_window = np.transpose(np.argwhere(Tot_curve == np.amax(Tot_curve))) #Find the peak window within the theoretical max profile
     peak_time = round(random.normalvariate(round(np.average(peak_window)),1/3*(peak_window[0,-1]-peak_window[0,0]))) #Within the peak_window, randomly calculate the peak_time using a gaussian distribution
     peak_time_range = np.arange((peak_time-round(math.fabs(peak_time-(random.gauss(peak_time,(peak_enlarg*peak_time)))))),(peak_time+round(math.fabs(peak_time-random.gauss(peak_time,(peak_enlarg*peak_time)))))) #the peak_time is randomly enlarged based on the calibration parameter peak_enlarg
+    
     
     '''
     The core stochastic process starts here. For each profile requested by the software user, 

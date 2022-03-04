@@ -6,7 +6,7 @@ Input data definition
 '''
 
 
-from ramp.core.core import User, np
+from ramp.core.core import User
 User_list = []
 
 '''
