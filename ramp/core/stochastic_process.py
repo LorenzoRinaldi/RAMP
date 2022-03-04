@@ -12,8 +12,7 @@ from ramp.core.initialise import Initialise_model, Initialise_inputs
 def Stochastic_Process(j):
     Profile, num_profiles = Initialise_model()
     
-    input_format = j.split(".")[-1]
-    peak_enlarg, mu_peak, s_peak, op_factor, Year_behaviour, User_list = Initialise_inputs(j, input_format)
+    peak_enlarg, mu_peak, s_peak, op_factor, Year_behaviour, User_list = Initialise_inputs(j)
     '''
     Calculation of the peak time range, which is used to discriminate between off-peak and on-peak coincident switch-on probability
     Calculates first the overall Peak Window (taking into account all User classes). 
@@ -44,6 +43,7 @@ def Stochastic_Process(j):
     for prof_i in range(num_profiles): #the whole code is repeated for each profile that needs to be generated
         Tot_Classes = np.zeros(1440) #initialise an empty daily profile that will be filled with the sum of the hourly profiles of each User instance
         for Us in User_list: #iterates for each User instance (i.e. for each user class)
+                   
             Us.load = np.zeros(1440) #initialise empty load for User instance
             for i in range(Us.num_users): #iterates for every single user within a User class. Each single user has its own separate randomisation
                 if Us.user_preference == 0:
@@ -51,8 +51,10 @@ def Stochastic_Process(j):
                     pass
                 else:
                     rand_daily_pref = random.randint(1,Us.user_preference)
+
                 for App in Us.App_list: #iterates for all the App types in the given User class
                     #initialises variables for the cycle
+
                     tot_time = 0
                     App.daily_use = np.zeros(1440)
                     if random.uniform(0,1) > App.occasional_use: #evaluates if occasional use happens or not
@@ -105,7 +107,7 @@ def Stochastic_Process(j):
                     App.daily_use_masked = np.zeros_like(ma.masked_not_equal(App.daily_use,0.001))
                   
                     App.power = App.POWER[prof_i]
-                    
+                   
                     #random variability is applied to the total functioning time and to the duration of the duty cycles, if they have been specified
                     random_var_t = random.uniform((1-App.r_t),(1+App.r_t))
                     if App.activate == 1:
@@ -139,7 +141,7 @@ def Stochastic_Process(j):
                     if rand_time > 0.99*(np.diff(rand_window_1)+np.diff(rand_window_2)+np.diff(rand_window_3)):
                         rand_time = int(0.99*(np.diff(rand_window_1)+np.diff(rand_window_2)+np.diff(rand_window_3)))
                     max_free_spot = rand_time #free spots are used to detect if there's still space for switch_ons. Before calculating actual free spots, the max free spot is set equal to the entire randomised func_time
-                           
+                  
                     while tot_time <= rand_time: #this is the key cycle, which runs for each App until the switch_ons and their duration equals the randomised total time of use of the App
                             #check how many windows to consider
                             if App.num_windows == 1:
@@ -208,7 +210,8 @@ def Stochastic_Process(j):
                                         indexes = np.arange(switch_on,switch_on+(int(random.uniform(App.func_cycle,upper_limit))))
                                     else:    
                                         indexes = np.arange(switch_on,switch_on+upper_limit)
-                                        
+                                
+                                print(indexes.size)
                                 tot_time = tot_time + indexes.size #the count of total time is updated with the size of the indexes array
                                 
                                 if tot_time > rand_time: #control to check when the total functioning time is reached. It will be typically overcome, so a correction is applied to avoid this

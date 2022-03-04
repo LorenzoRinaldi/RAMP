@@ -86,10 +86,13 @@ def Initialise_from_excel(file):
         basic_information = basic_information.droplevel(0,axis=1)
         
         for p in range(basic_information.shape[1]):
-            if math.isnan(basic_information.iloc[a,p]) == False:
-                
-                if type(basic_information.iloc[a,p]) != str:
+
+            if type(basic_information.iloc[a,p]) != str:
+                if math.isnan(basic_information.iloc[a,p]) == False:
                     bi_instruction += ", " + inputs_params['Appliances'][basic_information.columns[p]] + "=" + str(basic_information.iloc[a,p])
+            else:
+                bi_instruction += ", " + inputs_params['Appliances'][basic_information.columns[p]] + "=" + "'" + basic_information.iloc[a,p] + "'"
+            
         bi_instruction += ")"
         
         exec(bi_instruction)
@@ -102,11 +105,16 @@ def Initialise_from_excel(file):
         windows_information = windows_information.droplevel(0,axis=1)
         
         for w in range(windows_information.shape[1]):
-            if "Window" in windows_information.columns[w] and len(str(windows_information.iloc[a,w])) > 3:
-                win_instruction += inputs_params["Windows"][windows_information.columns[w]] + "=" + "["+windows_information.iloc[a,w]+"]" + ","
+            
+            if "Window" in windows_information.columns[w]:
+                if type(windows_information.iloc[a,w]) != float and type(windows_information.iloc[a,w]) != np.float64:
+                    win_instruction += inputs_params["Windows"][windows_information.columns[w]] + "=" + "["+windows_information.iloc[a,w]+"]" + ","
+             
             else:
-                if math.isnan(windows_information.iloc[a,w]) == False:
-                    win_instruction += inputs_params["Windows"][windows_information.columns[w]] + "=" + windows_information.iloc[a,w] + ","
+                if type(windows_information.iloc[a,w]) == float or type(windows_information.iloc[a,w]) == np.float64:
+                    if math.isnan(windows_information.iloc[a,w]) == False:
+                        win_instruction += inputs_params["Windows"][windows_information.columns[w]] + "=" + str(windows_information.iloc[a,w]) + ","
+                    
         win_instruction += ")"
         
         eval(win_instruction)
@@ -117,9 +125,12 @@ def Initialise_from_excel(file):
     return User_list
 
 
-def Initialise_inputs(j, input_format):
+def Initialise_inputs(j):
     
     Year_behaviour = yearly_pattern()
+    
+    input_format = j.split(".")[-1]
+
     if input_format == "py":
         user_list = user_defined_inputs(j)
     elif input_format == "xlsx":
