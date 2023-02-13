@@ -24,6 +24,7 @@ under the License.
 #%% Import required modules
 
 import sys,os
+import pandas as pd
 sys.path.append('../')
 
 from core.stochastic_process import Stochastic_Process
@@ -31,7 +32,7 @@ from post_process import post_process as pp
 
 # Define which input files should be considered and run. 
 # Files are specified as numbers in a list (e.g. [1,2] will consider input_file_1.py and input_file_2.py)
-input_files_to_run = [r"input_files\test.xlsx"]
+input_files_to_run = [r"input_files\HH - very low.xlsx"]#, r"input_files\HH - low.xlsx""]
 
 # Calls the stochastic process and saves the result in a list of stochastic profiles
 for j in input_files_to_run:
@@ -41,8 +42,9 @@ for j in input_files_to_run:
     Profiles_avg, Profiles_list_kW, Profiles_series = pp.Profile_formatting(Profiles_list)
     pp.Profile_series_plot(Profiles_series) #by default, profiles are plotted as a series
     
-    pp.export_series(Profiles_series,j)
-
+    # sss=pp.export_series(Profiles_series,j)
+    pd.DataFrame(Profiles_series).to_csv(f'results\output_file_{j.split("HH")[-1]}.csv')
+    
     if len(Profiles_list) > 1: #if more than one daily profile is generated, also cloud plots are shown
         pp.Profile_cloud_plot(Profiles_list, Profiles_avg)
 
